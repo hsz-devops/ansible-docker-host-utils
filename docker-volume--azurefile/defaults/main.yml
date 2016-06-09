@@ -1,0 +1,4 @@
+---
+active_version:      "0.2.1"
+
+path_docker_plugins: "/usr/local/bin"

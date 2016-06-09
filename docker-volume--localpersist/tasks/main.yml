@@ -1,0 +1,16 @@
+---
+
+# plugin is installed as container running on privileged mode,
+# and with direct access to docker/plugins
+
+# https://github.com/CWSpear/local-persist
+docker:
+    become: true
+    image: cwspear/docker-local-persist-volume-plugin
+    state: started
+    restart_policy: unless-stopped
+    privileged: yes
+    name: volume-plugin--local-persist
+    volumes: "{{ [ '/run/docker/plugins/:/run/docker/plugins/'' ] | union (volumes_mapping) }}"
+
+# not working ?!?!

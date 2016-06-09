@@ -1,0 +1,30 @@
+---
+
+# - name: dump info for troubleshooting purposes
+#   become: true
+#   setup:
+#   register: host_data_out
+#
+# - debug: msg={{ host_data_out }}
+
+- name: check docker-engine is already installed
+  become: true
+  stat: path=/etc/default/docker
+  register: docker_conf_exists
+
+- name: "Check this is being run against a debian/ubuntu server with docker installed on it"
+  assert:
+    that:
+      - "{{ (docker_conf_exists.stat.isdir is defined) and (docker_conf_exists.stat.isdir) }}"
+      - "'{{ ansible_os_family }}'            == 'Debian'"
+      - "'{{ ansible_distribution }}'         == 'Ubuntu'"
+      - ("'{{ ansible_distribution_version }}' == '14.04'" or
+         "'{{ ansible_distribution_version }}' == '16.04'")
+      - "{{ ansible_virtualization_type is not defined }} or ('{{ ansible_virtualization_type }}' != 'docker')"
+      #- "not ('{{ ansible_virtualization_type }}' == 'docker')"
+      #- not false
+
+- name: prepare folder structure
+  file:
+    path: "{{ path_docker_plugins }}"
+    state: directory

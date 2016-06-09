@@ -1,0 +1,4 @@
+---
+
+volumes_mapping:
+    - /var/local/docker-volume--local-persist/:/opt/mnt/
