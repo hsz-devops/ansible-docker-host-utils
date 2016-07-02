@@ -1,16 +1,31 @@
 ---
 
+- name: "Local-Persist: docker-py setup: 1"
+  become: true
+  apt:
+    name: python-pip
+    state: installed
+
+- name: "Local-Persist: docker-py setup: 2"
+  become: true
+  pip:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - docker-py
+
 # plugin is installed as container running on privileged mode,
 # and with direct access to docker/plugins
 
 # https://github.com/CWSpear/local-persist
-docker:
-    become: true
+- name: "Local-Persist"
+  become: true
+  docker_container:
+    name: volume-plugin--local-persist
     image: cwspear/docker-local-persist-volume-plugin
+    privileged: yes
     state: started
     restart_policy: unless-stopped
-    privileged: yes
-    name: volume-plugin--local-persist
     volumes: "{{ [ '/run/docker/plugins/:/run/docker/plugins/'' ] | union (volumes_mapping) }}"
 
 # not working ?!?!
